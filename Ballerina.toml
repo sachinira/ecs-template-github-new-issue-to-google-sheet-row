@@ -1,5 +1,5 @@
 [package]
-org = "chuhaashanan"
+org = "sachinira"
 name = "gsheet_new_issues"
 version= "0.1.0"
 
@@ -9,10 +9,10 @@ observability-included=true
 [[dependency]]
 org = "ballerinax"
 name = "googleapis_sheets"
-version = "0.99.3"
+version = "0.99.6"
 
 
 [[dependency]]
 org = "ballerinax"
 name = "github"
-version = "0.99.8"
+version = "0.99.11"

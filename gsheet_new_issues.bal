@@ -1,52 +1,66 @@
-import ballerina/http;
-import ballerina/oauth2;
-import ballerina/os;
 import ballerina/websub;
-import ballerinax/github.webhook as webhook;
+import ballerina/log;
+import ballerinax/github.webhook;
 import ballerinax/googleapis_sheets as sheets;
 
-// Github listener new implementation is needed. 
-oauth2:OutboundOAuth2Provider githubOAuth2Provider = new ({
-    accessToken: os:getEnv("GH_ACCESS_TOKEN"),
-    refreshConfig: {
-        clientId: os:getEnv("GH_CLIENT_ID"),
-        clientSecret: os:getEnv("GH_CLIENT_SECRET"),
-        refreshUrl: os:getEnv("GH_REFRESH_URL"),
-        refreshToken: os:getEnv("GH_REFRESH_TOKEN")
-    }
-});
-http:BearerAuthHandler githubOAuth2Handler = new (githubOAuth2Provider);
+configurable string sheets_refreshToken = ?;
+configurable string sheets_clientId = ?;
+configurable string sheets_clientSecret = ?;
+configurable string sheets_spreadSheetID = ?;
+configurable string sheets_workSheetName = ?;
 
-listener webhook:Listener githubWebhookListener = new (4567);
-//////////
+configurable string github_accessToken = ?;
+configurable string github_callbackUrl = ?;
+configurable string github_topic = ?;
+configurable string github_secret = ?;
+
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
-        clientId: clientId,
-        clientSecret: clientSecret,
+        clientId: sheets_clientId,
+        clientSecret: sheets_clientSecret,
         refreshUrl: sheets:REFRESH_URL,
-        refreshToken: refreshToken
+        refreshToken: sheets_refreshToken
     }
 };
 
 sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
-@websub:SubscriberServiceConfig {
-    subscribeOnStartUp: true,
-    target: [webhook:HUB, "https://github.com/" + os:getEnv("GH_USERNAME") + "/" + os:getEnv("GH_REPO_NAME") 
-        + "/events/*.json"],
-    hubClientConfig: {
-        auth: {
-            authHandler: githubOAuth2Handler
-        }
-    },
-    callback: os:getEnv("CALLBACK_URL")
-}
-service websub:SubscriberService /payload on githubWebhookListener {
-    remote function onIssuesOpened(websub:Notification notification, webhook:IssuesEvent event) {
-        (string|int)[] values = [event.issue.number, event.issue.title, event.issue.user.login, event.issue.created_at];
+listener webhook:Listener githubListener = new (8080);
 
-        error? append = checkpanic spreadsheetClient->appendRowToSheet(os:getEnv("SPREADSHEET_ID"), 
-            os:getEnv("SPREADSHEET_NAME"), values);
+@websub:SubscriberServiceConfig {
+    target: [webhook:HUB, github_topic],
+    callback: github_callbackUrl,
+    secret: github_secret,
+    httpConfig: {
+        auth: {
+            token: github_accessToken
+        }
+    }
+}
+service websub:SubscriberService /subscriber on githubListener {
+    remote function onEventNotification(websub:ContentDistributionMessage event) {
+        final var headerValues = ["Issue Link", "Issue Number", "Issue Title", "Issue User", "Issue Creted At"];
+        var headers = spreadsheetClient->getRow(sheets_spreadSheetID, sheets_workSheetName, 1);
+        if(headers == []){
+            error? appendResult = checkpanic spreadsheetClient->appendRowToSheet(sheets_spreadSheetID, sheets_workSheetName, 
+                headerValues);
+            if (appendResult is error) {
+                log:printError(appendResult.message());
+            }
+        }
+        var payload = githubListener.getEventType(event);
+        if (payload is webhook:IssuesEvent) {
+            if (payload.action == webhook:ISSUE_OPENED) {
+                (string|int)[] values = [payload.issue.html_url, payload.issue.number, payload.issue.title, 
+                    payload.issue.user.login, payload.issue.created_at];
+                error? appendResult = checkpanic spreadsheetClient->appendRowToSheet(sheets_spreadSheetID, 
+                    sheets_workSheetName, values);
+                if (appendResult is error) {
+                    log:printError(appendResult.message());
+                }
+            }
+        }
+
     }
 }

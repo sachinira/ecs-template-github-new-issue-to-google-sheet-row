@@ -1,9 +1,9 @@
-# Add rows to Google Sheets Spreadsheet when new Issue is created in a GitHub Repository
+# Add rows to Google Sheets spreadsheet when new Issue is created in a GitHub repository
 ## Integration Use Case
 At the execution of this template, each time a new issue is created in a given GitHub repository, a new row will be 
 added to a work sheet in a given Google Sheets spreadsheet. 
 
-![Use Case](docs/images/template_flow.png?raw=true)
+<div style="text-align:center"><img src="docs/images/template_flow.png?raw=true" /></div>
 
 ## Supported Versions
 
@@ -44,7 +44,7 @@ added to a work sheet in a given Google Sheets spreadsheet.
 1. First obtain a [Personal Access Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or the [GitHub OAuth App Token](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
 2. To create the GitHub topic name, you need to create a github repository where you want to get information of new 
 issues to the Google Sheet.
-3. Create the GitHub topic name according to the given format. Replace the GITHUB_USER_NAME and REPOSITORY_NAME using 
+3. Create the GitHub topic name according to the given format. Replace the `GITHUB_USER_NAME` and `REPOSITORY_NAME` using 
 your `user name` and `repository name` respectively.
   
 ```

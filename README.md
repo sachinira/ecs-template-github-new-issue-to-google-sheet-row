@@ -3,6 +3,8 @@
 At the execution of this template, each time a new issue is created in a given Github repository, a new row will be 
 added to a work sheet in a given Google Sheets Spreadsheet. 
 
+![Use Case](docs/images/template.png?raw=true)
+
 ## Supported Versions
 
 <table>
@@ -70,9 +72,9 @@ Select OAuth client Id.
 8. Visit https://developers.google.com/oauthplayground/ 
     Go to settings (Top right corner) -> Tick 'Use your own OAuth credentials' and insert Oauth ClientId and secret. 
     Click close.
-9. Then,Complete Step1 (Select and Authorize APIs)
+9. Then,Complete step 1 (Select and Authorize APIs)
 10. Make sure you select https://www.googleapis.com/auth/drive & https://www.googleapis.com/auth/spreadsheets Oauth scopes.
-11. Click Authorize APIs and You will be in Step 2.
+11. Click Authorize APIs and You will be in step 2.
 12. Exchange Auth code for tokens.
 13. Copy Access token and Refresh token. Put it on the config(Config.toml) file.
 

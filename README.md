@@ -3,7 +3,7 @@
 At the execution of this template, each time a new issue is created in a given GitHub repository, a new row will be 
 added to a work sheet in a given Google Sheets spreadsheet. 
 
-<div style="text-align:center"><img src="docs/images/template_flow.png?raw=true" /></div>
+<div style="text-align:center"><img src="./docs/images/template_flow.png?raw=true" alt="Github-Google Sheet Integration template overview"/></div>
 
 ## Supported Versions
 

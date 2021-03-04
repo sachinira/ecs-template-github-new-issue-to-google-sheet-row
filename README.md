@@ -1,9 +1,9 @@
-# Add rows to Google Sheets Spreadsheet when new Issue is created in a Github Repository
+# Add rows to Google Sheets Spreadsheet when new Issue is created in a GitHub Repository
 ## Integration Use Case
-At the execution of this template, each time a new issue is created in a given Github repository, a new row will be 
-added to a work sheet in a given Google Sheets Spreadsheet. 
+At the execution of this template, each time a new issue is created in a given GitHub repository, a new row will be 
+added to a work sheet in a given Google Sheets spreadsheet. 
 
-![Use Case](docs/images/template.png?raw=true)
+![Use Case](docs/images/template_flow.png?raw=true)
 
 ## Supported Versions
 
@@ -15,13 +15,13 @@ added to a work sheet in a given Google Sheets Spreadsheet.
    </td>
   </tr>
   <tr>
-   <td>Java Development Kit (JDK) 
+   <td>Java Development Kit (JDK)
    </td>
    <td>11
    </td>
   </tr>
   <tr>
-   <td>GitHub REST API 
+   <td>GitHub REST API Version
    </td>
    <td>V3
    </td>
@@ -36,47 +36,51 @@ added to a work sheet in a given Google Sheets Spreadsheet.
 
 ## Pre-requisites
 * Download and install [Ballerina](https://ballerinalang.org/downloads/).
-* Google Cloud Platform Account
-* Github Account
+* Google Cloud Platform account
+* GitHub account
 
 ## Configuration
-### Setup Github configuration
-1. First obtain a [Personal Access Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or the [Github OAuth App Token](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
-2. To create the Github topic name, you need to create a github repository where you want to get information of new 
+### Setup GitHub configuration
+1. First obtain a [Personal Access Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or the [GitHub OAuth App Token](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
+2. To create the GitHub topic name, you need to create a github repository where you want to get information of new 
 issues to the Google Sheet.
-3. Create the Github topic name according to the given format. Replace the GITHUB_USER_NAME and REPOSITORY_NAME using 
-your user name and repository name respectively.
+3. Create the GitHub topic name according to the given format. Replace the GITHUB_USER_NAME and REPOSITORY_NAME using 
+your `user name` and `repository name` respectively.
   
-> https://github.com/<GITHUB_USER_NAME>/<REPOSITORY_NAME>/events/*.json"
+```
+https://github.com/<GITHUB_USER_NAME>/<REPOSITORY_NAME>/events/*.json"
+```
   
 4. Select any value as the github secret.
-5. For setting up a Github callback URL you can install [ngrok](https://ngrok.com/docs) and expose a local web server to 
+5. For setting up a GitHub callback URL you can install [ngrok](https://ngrok.com/docs) and expose a local web server to 
 the internet.
 6. Then start the `ngork` with `webhook:Listener` service port (8080 in this case) by using the command `./ngrok http 8080`
 7. Set the callback URL according to the given format. 
-> <public_url_obtained_by_ngrok>/<name_of_websub_service>
+```
+<public_url_obtained_by_ngrok>/<name_of_websub_service>
+```
 8. Use the above obtained values to set github_accessToken, github_secret, github_topic and github_callbackUrl in the 
 config(Config.toml) file.
 
 ### Setup Google Sheets Configurations
 Create a Google account and create a connected app by visiting [Google cloud platform APIs and Services](https://console.cloud.google.com/apis/dashboard). 
 
-1. Click Library from the left side menu.
+1. Click `Library` from the left side bar.
 2. In the search bar enter Google Sheets.
 3. Then select Google Sheets API and click Enable button.
 4. Complete OAuth Consent Screen setup.
-5. Click Credential tab from left side bar. In the displaying window click Create Credentials button
+5. Click `Credential` tab from left side bar. In the displaying window click `Create Credentials` button
 Select OAuth client Id.
 6. Fill the required field. Add https://developers.google.com/oauthplayground to the Redirect URI field.
-7. Get clientId and secret. Put it on the config(Config.toml) file.
+7. Get client ID and client secret. Put it on the config(Config.toml) file.
 8. Visit https://developers.google.com/oauthplayground/ 
-    Go to settings (Top right corner) -> Tick 'Use your own OAuth credentials' and insert Oauth ClientId and secret. 
+    Go to settings (Top right corner) -> Tick 'Use your own OAuth credentials' and insert Oauth client ID and client secret. 
     Click close.
 9. Then,Complete step 1 (Select and Authorize APIs)
 10. Make sure you select https://www.googleapis.com/auth/drive & https://www.googleapis.com/auth/spreadsheets Oauth scopes.
-11. Click Authorize APIs and You will be in step 2.
+11. Click `Authorize APIs` and You will be in step 2.
 12. Exchange Auth code for tokens.
-13. Copy Access token and Refresh token. Put it on the config(Config.toml) file.
+13. Copy `access token` and `refresh token`. Put it on the config(Config.toml) file.
 
 ## Configuring the Integration Template
 
@@ -114,7 +118,7 @@ root directory of the integration template.
 2. Then you can run the integration binary with the following command. 
 `$  bal run target/bin/gsheet_new_issues-0.1.1.jar`. 
 
-3. Now you can add new issues to the specific Github repository and observe that integration template runtime has 
+3. Now you can add new issues to the specific GitHub repository and observe that integration template runtime has 
 received the event notification for new issue creation.
 
-4. You can check the Google Sheet to verify that new issue is added to the specified Sheet. 
+4. You can check the Google Sheet to verify that new issue is added to the specified sheet. 

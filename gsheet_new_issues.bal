@@ -1,56 +1,66 @@
-import ballerina/config;
-import ballerina/http;
-import ballerina/oauth2;
 import ballerina/websub;
-import ballerinax/github.webhook as webhook;
+import ballerina/log;
+import ballerinax/github.webhook;
 import ballerinax/googleapis_sheets as sheets;
 
-oauth2:OutboundOAuth2Provider githubOAuth2Provider = new ({
-    accessToken: config:getAsString("GH_ACCESS_TOKEN"),
-    refreshConfig: {
-        clientId: config:getAsString("GH_CLIENT_ID"),
-        clientSecret: config:getAsString("GH_CLIENT_SECRET"),
-        refreshUrl: config:getAsString("GH_REFRESH_URL"),
-        refreshToken: config:getAsString("GH_REFRESH_TOKEN")
-    }
-});
-http:BearerAuthHandler githubOAuth2Handler = new (githubOAuth2Provider);
+configurable string sheets_refreshToken = ?;
+configurable string sheets_clientId = ?;
+configurable string sheets_clientSecret = ?;
+configurable string sheets_spreadSheetID = ?;
+configurable string sheets_workSheetName = ?;
 
-listener webhook:Listener githubWebhookListener = new (4567);
+configurable string github_accessToken = ?;
+configurable string github_callbackUrl = ?;
+configurable string github_topic = ?;
+configurable string github_secret = ?;
+
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
-    oauth2Config: {
-        accessToken: config:getAsString("ACCESS_TOKEN"),
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: sheets_clientId,
+        clientSecret: sheets_clientSecret,
+        refreshUrl: sheets:REFRESH_URL,
+        refreshToken: sheets_refreshToken
     }
 };
 
-sheets:Client spreadsheetClient = new (spreadsheetConfig);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+
+listener webhook:Listener githubListener = new (8080);
 
 @websub:SubscriberServiceConfig {
-    subscribeOnStartUp: true,
-    target: [webhook:HUB, "https://github.com/" + config:getAsString("GH_USERNAME") + "/" + config:getAsString("GH_REPO_NAME") + "/events/*.json"],
-    hubClientConfig: {
+    target: [webhook:HUB, github_topic],
+    callback: github_callbackUrl,
+    secret: github_secret,
+    httpConfig: {
         auth: {
-            authHandler: githubOAuth2Handler
+            token: github_accessToken
         }
-    },
-    callback: config:getAsString("CALLBACK_URL")
+    }
 }
-service websub:SubscriberService /payload on githubWebhookListener {
-    remote function onIssuesOpened(websub:Notification notification, webhook:IssuesEvent event) {
-        (string|int)[] values = [event.issue.number, event.issue.title, event.issue.user.login, event.issue.created_at];
-        sheets:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(config:getAsString("SPREADSHEET_ID"));
-        if (spreadsheet is sheets:Spreadsheet) {
-            sheets:Sheet|error sheet = spreadsheet.getSheetByName(config:getAsString("SHEET_NAME"));
-            if (sheet is sheets:Sheet) {
-                error? appendResult = sheet->appendRow(values);            
+service websub:SubscriberService /subscriber on githubListener {
+    remote function onEventNotification(websub:ContentDistributionMessage event) {
+        final var headerValues = ["Issue Link", "Issue Number", "Issue Title", "Issue User", "Issue Creted At"];
+        var headers = spreadsheetClient->getRow(sheets_spreadSheetID, sheets_workSheetName, 1);
+        if(headers == []){
+            error? appendResult = checkpanic spreadsheetClient->appendRowToSheet(sheets_spreadSheetID, sheets_workSheetName, 
+                headerValues);
+            if (appendResult is error) {
+                log:printError(appendResult.message());
             }
         }
+        var payload = githubListener.getEventType(event);
+        if (payload is webhook:IssuesEvent) {
+            if (payload.action == webhook:ISSUE_OPENED) {
+                (string|int)[] values = [payload.issue.html_url, payload.issue.number, payload.issue.title, 
+                    payload.issue.user.login, payload.issue.created_at];
+                error? appendResult = checkpanic spreadsheetClient->appendRowToSheet(sheets_spreadSheetID, 
+                    sheets_workSheetName, values);
+                if (appendResult is error) {
+                    log:printError(appendResult.message());
+                }
+            }
+        }
+
     }
 }

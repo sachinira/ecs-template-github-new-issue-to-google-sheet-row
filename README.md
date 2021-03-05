@@ -1,7 +1,8 @@
-# Add rows to Google Sheets spreadsheet when new Issue is created in a GitHub repository
+# Template: GitHub new issue to Google Sheet
 ## Integration Use Case
-At the execution of this template, each time a new issue is created in a given GitHub repository, a new row will be 
-added to a work sheet in a given Google Sheets spreadsheet. 
+This template is useful when we want to get a summary of the issues created for a GitHub repository to a Google Sheet. 
+Each time a new issue is created in a given GitHub repository, this template will add a new row to a work sheet in a 
+given Google Sheets spreadsheet. 
 
 <div style="text-align:center"><img src="./docs/images/template_flow.png?raw=true" alt="Github-Google Sheet Integration template overview"/></div>
 
@@ -50,7 +51,6 @@ your `user name` and `repository name` respectively.
 ```
 https://github.com/<GITHUB_USER_NAME>/<REPOSITORY_NAME>/events/*.json"
 ```
-  
 4. Select any value as the github secret.
 5. For setting up a GitHub callback URL you can install [ngrok](https://ngrok.com/docs) and expose a local web server to 
 the internet.
@@ -97,7 +97,7 @@ Select OAuth client Id.
 ### ballerinax/github.webhook related configurations 
 
 github_accessToken = "<PAT_OR_OAUTH_TOKEN>"  
-github_secret = "<GITHUB_SECRET>"
+github_secret = "<GITHUB_SECRET>"  
 github_topic = "<GITHUB_TOPIC>"  
 github_callbackUrl = "<CALLBACK_URL>"  
 

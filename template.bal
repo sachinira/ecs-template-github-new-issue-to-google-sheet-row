@@ -40,7 +40,7 @@ listener webhook:Listener githubListener = new (8080);
 }
 service websub:SubscriberService /subscriber on githubListener {
     remote function onEventNotification(websub:ContentDistributionMessage event) {
-        final var headerValues = ["Issue Link", "Issue Number", "Issue Title", "Issue User", "Issue Creted At"];
+        final var headerValues = [ISSUE_LINK, ISSUE_NUMBER, ISSUE_TITLE, ISSUE_USER, ISSUE_CREATED_AT];
         var headers = spreadsheetClient->getRow(sheets_spreadSheetID, sheets_workSheetName, 1);
         if(headers == []){
             error? appendResult = checkpanic spreadsheetClient->appendRowToSheet(sheets_spreadSheetID, sheets_workSheetName, 

@@ -4,7 +4,7 @@ This template is useful when we want to get a summary of the issues created for 
 Each time a new issue is created in a given GitHub repository, this template will add a new row to a work sheet in a 
 given Google Sheets spreadsheet. 
 
-<div style="text-align:center"><img src="./docs/images/template_flow.png?raw=true" alt="Github-Google Sheet Integration template overview"/></div>
+<p align="center"><img src="./docs/images/template_flow.png?raw=true" alt="Github-Google Sheet Integration template overview"/></p>
 
 ## Supported Versions
 

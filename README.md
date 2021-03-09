@@ -1,13 +1,36 @@
-# Template: GitHub new issue to Google Sheet
-## Integration Use Case
-This template is useful when we want to get a summary of the issues created for a GitHub repository to a Google Sheet. 
-Each time a new issue is created in a given GitHub repository, this template will add a new row to a work sheet in a 
-given Google Sheets spreadsheet. 
+# Template: GitHub new issue to Google Sheet row
+When a new Issue is opened in Github, add a new row to a Google Sheet.
 
-<div style="text-align:center"><img src="./docs/images/template_flow.png?raw=true" alt="Github-Google Sheet Integration template overview"/></div>
+We can make our day-to-day information organized and represented in a generic format with the help of Google Sheets. By 
+using this integration, we can organize and automatically set up a Google Sheet which will contain information about 
+issues created in a specific GitHub repository. 
+
+This template can be used to create a new row in a Google Sheet when a new Issue is opened on a specific GitHub repository.
+
+## Use this template to
+- Add a new row to a Google Sheet containing information in the new issue created in a GitHub repository.
+- Get away from manually summarizing all the issues created for a particular GitHub repository of your choice.
+
+## What you need
+- A GitHub Account
+- A Google Cloud Platform Account
+
+## How to set up
+- Import the template.
+- Allow access to the GitHub account.
+- Select the repository.
+- Allow access to the Google account.
+- Select spreadsheet.
+- Select worksheet.
+- Select the fields to include.
+- Set up the template. 
+
+# Developer Guide
+<p align="center">
+<img src="./docs/images/template_flow.png?raw=true" alt="Github-Google Sheet Integration template overview"/>
+</p>
 
 ## Supported Versions
-
 <table>
   <tr>
    <td>Ballerina Language Version
@@ -40,8 +63,8 @@ given Google Sheets spreadsheet.
 * Google Cloud Platform account
 * GitHub account
 
-## Configuration
-### Setup GitHub configuration
+## Account Configuration
+### Configuration steps for GitHub account
 1. First obtain a [Personal Access Token (PAT)](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or the [GitHub OAuth App Token](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
 2. To create the GitHub topic name, you need to create a github repository where you want to get information of new 
 issues to the Google Sheet.
@@ -62,7 +85,7 @@ the internet.
 8. Use the above obtained values to set github_accessToken, github_secret, github_topic and github_callbackUrl in the 
 config(Config.toml) file.
 
-### Setup Google Sheets Configurations
+### Configuration steps for Google Sheets account
 Create a Google account and create a connected app by visiting [Google cloud platform APIs and Services](https://console.cloud.google.com/apis/dashboard). 
 
 1. Click `Library` from the left side bar.
@@ -82,35 +105,30 @@ Select OAuth client Id.
 12. Exchange Auth code for tokens.
 13. Copy `access token` and `refresh token`. Put it on the config(Config.toml) file.
 
-## Configuring the Integration Template
-
+## Template Configuration
 1. Create new spreadsheet.
 2. Rename the sheet if you want.
-3. Get the ID of the spreadsheet.  
+3. Get the ID of the spreadsheet.
 ![alt text](docs/images/spreadsheet_id_example.png?raw=true)
 5. Get the work sheet name.
 
 6. Once you obtained all configurations, Create `Config.toml` in root directory.
 7. Replace the necessary fields in the `Config.toml` file with your data.
 
-### Config.toml 
-### ballerinax/github.webhook related configurations 
-
-github_accessToken = "<PAT_OR_OAUTH_TOKEN>"  
-github_secret = "<GITHUB_SECRET>"  
-github_topic = "<GITHUB_TOPIC>"  
-github_callbackUrl = "<CALLBACK_URL>"  
-
-### ballerinax/googleapis_sheet related configurations  
-
-sheets_spreadSheetID = "<SPREADSHEET_ID>"  
-sheets_workSheetName = "<WORKSHEET_NAME>"  
-sheets_refreshToken = "<REFRESH_TOKEN>"  
-sheets_clientId = "<CLIENT_ID>"  
-sheets_clientSecret = "<CLIENT_SECRET>"  
+## Config.toml 
+```
+github_accessToken = "<PAT_OR_OAUTH_TOKEN>"
+github_secret = "<GITHUB_SECRET>"
+github_topic = "<GITHUB_TOPIC>"
+github_callbackUrl = "<CALLBACK_URL>"
+sheets_spreadSheetID = "<SPREADSHEET_ID>"
+sheets_workSheetName = "<WORKSHEET_NAME>"
+sheets_refreshToken = "<REFRESH_TOKEN>"
+sheets_clientId = "<CLIENT_ID>"
+sheets_clientSecret = "<CLIENT_SECRET>"
+```
 
 ## Running the Template
-
 1. First you need to build the integration template and create the executable binary. Run the following command from the 
 root directory of the integration template. 
 `$ bal build`. 

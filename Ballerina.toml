@@ -1,6 +1,6 @@
 [package]
 org = "sachinira"
-name = "gsheet_new_issues"
+name = "github_new_issues_to_gsheet"
 version= "0.1.1"
 
 [build-options]

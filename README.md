@@ -117,6 +117,7 @@ Select OAuth client Id.
 
 ## Config.toml 
 ```
+[<ORG_NAME>.github_new_issues_to_gsheet]
 github_access_token = "<PAT_OR_OAUTH_TOKEN>"
 github_secret = "<GITHUB_SECRET>"
 github_topic = "<GITHUB_TOPIC>"
@@ -133,7 +134,7 @@ root directory of the integration template.
 `$ bal build`. 
 
 2. Then you can run the integration binary with the following command. 
-`$  bal run target/bin/github_new_issues_gsheet-0.1.1.jar`. 
+`$  bal run target/bin/github_new_issues_to_gsheet-0.1.1.jar`. 
 
 3. Now you can add new issues to the specific GitHub repository and observe that integration template runtime has 
 received the event notification for new issue creation.

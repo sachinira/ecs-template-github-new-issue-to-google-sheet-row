@@ -7,6 +7,10 @@ configurable string sheets_client_id = ?;
 configurable string sheets_client_secret = ?;
 configurable string sheets_spreadsheet_id = ?;
 configurable string sheets_worksheet_name = ?;
+configurable string github_access_token = ?;
+configurable string github_callback_url = ?;
+configurable string github_topic = ?;
+configurable string github_secret = ?;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
@@ -16,14 +20,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
         refreshToken: sheets_refresh_token
     }
 };
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
 listener webhook:Listener githubListener = new (8080);
-
-configurable string github_access_token = ?;
-configurable string github_callback_url = ?;
-configurable string github_topic = ?;
-configurable string github_secret = ?;
 
 @websub:SubscriberServiceConfig {
     target: [webhook:HUB, github_topic],

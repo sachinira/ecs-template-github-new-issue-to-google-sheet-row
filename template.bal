@@ -33,7 +33,7 @@ listener webhook:Listener githubListener = new (8080);
         }
     }
 }
-service /subscriber on githubListener {
+service / on githubListener {
     remote function onIssuesOpened(webhook:IssuesEvent event) returns error? {
         final var headerValues = [ISSUE_LINK, ISSUE_NUMBER, ISSUE_TITLE, ISSUE_USER, ISSUE_CREATED_AT];
         var headers = spreadsheetClient->getRow(sheets_spreadsheet_id, sheets_worksheet_name, 1);
